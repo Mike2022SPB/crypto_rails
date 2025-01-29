@@ -6,19 +6,23 @@ class PortfolioController < ApplicationController
 
   def add_token_to_portfolio
     if params_and_data_сhecking(token_params)
-      redirect_to portfolio_index_path, notice: "Добавлен"
+      redirect_to portfolio_index_path, notice: "Added"
     else
-      redirect_to portfolio_index_path, notice: "Не все поля заполнены"
+      redirect_to portfolio_index_path, notice: "Not all fields filled or amount is not positive on equal to 0"
     end
   end
 
   def update_token_amount
-    portfolio_currency = PortfolioCurrency.find_by(id: token_params[:id])
+    if  token_params["amount"].to_f.positive?
+      portfolio_currency = PortfolioCurrency.find_by(id: token_params[:id])
 
-    if portfolio_currency.update(amount: token_params[:amount])
-      redirect_to portfolio_index_path, notice: "Amount updated successfully!"
+      if portfolio_currency.update(amount: token_params[:amount])
+        redirect_to portfolio_index_path, notice: "Amount updated successfully!"
+      else
+        redirect_to portfolio_index_path, notice: "Failed to update amount!"
+      end
     else
-      redirect_to portfolio_index_path, notice: "Failed to update amount!"
+      redirect_to portfolio_index_path, notice: "Failed to update amount, amount is not positive on equal to 0"
     end
   end
 
@@ -40,7 +44,7 @@ class PortfolioController < ApplicationController
   private
 
   def params_and_data_сhecking(token_params)
-    if token_params["title"].present? && token_params["amount"].present?
+    if token_params["title"].present? && token_params["amount"].present? && token_params["amount"].to_f.positive?
       currency = Currency.find_by(title: token_params[:title])
       if currency.present?
         current_user.portfolio.add_tokens(currency, token_params[:amount])
@@ -48,7 +52,7 @@ class PortfolioController < ApplicationController
       else
         false
       end
-    elsif token_params["coin_symbol"].present? && token_params["amount"].present?
+    elsif token_params["coin_symbol"].present? && token_params["amount"].present? && token_params["amount"].to_f.positive?
       currency = Currency.find_by(coin_symbol: token_params[:coin_symbol])
       if currency.present?
         current_user.portfolio.add_tokens(currency, token_params[:amount])
