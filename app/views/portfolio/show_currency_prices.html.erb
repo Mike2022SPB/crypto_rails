@@ -1,0 +1,28 @@
+<%= render "portfolio/header" %>
+
+<div class="max-w-4xl mx-auto my-6 p-6 bg-white shadow-md rounded-lg">
+  <h2 class="text-2xl font-bold text-gray-800 mb-4">
+    <%= @currency.title %> (<%= @currency.coin_symbol %>)
+  </h2>
+
+  <table class="min-w-full border border-gray-200 shadow-sm rounded-lg overflow-hidden">
+    <thead class="bg-gray-100 text-gray-600 uppercase text-sm font-medium">
+      <tr>
+        <th class="px-6 py-3 text-left">Date</th>
+        <th class="px-6 py-3 text-left">Price</th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-gray-200">
+      <% @currency_prices.each do |price| %>
+        <tr class="hover:bg-gray-50 transition-colors duration-300">
+          <td class="px-6 py-4 text-gray-700 text-sm">
+            <%= price.date.strftime("%d %b %Y") %>
+          </td>
+          <td class="px-6 py-4 text-gray-700 text-sm">
+            $<%= number_with_precision(price.value, precision: 2, delimiter: ",") %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

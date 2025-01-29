@@ -10,9 +10,43 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_01_27_170823) do
+ActiveRecord::Schema[7.2].define(version: 2025_01_28_162831) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "currencies", force: :cascade do |t|
+    t.string "title"
+    t.string "coin_symbol"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "portfolio_currencies", force: :cascade do |t|
+    t.bigint "portfolio_id"
+    t.bigint "currency_id"
+    t.decimal "amount"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["currency_id"], name: "index_portfolio_currencies_on_currency_id"
+    t.index ["portfolio_id"], name: "index_portfolio_currencies_on_portfolio_id"
+  end
+
+  create_table "portfolios", force: :cascade do |t|
+    t.bigint "user_id"
+    t.decimal "portfolio_value", default: "0.0"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_portfolios_on_user_id"
+  end
+
+  create_table "prices", force: :cascade do |t|
+    t.decimal "value"
+    t.datetime "date"
+    t.bigint "currency_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["currency_id"], name: "index_prices_on_currency_id"
+  end
 
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false

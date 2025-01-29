@@ -1,7 +1,92 @@
-<% if user_signed_in? %>
-  <h1>Welcome Home, <%= current_user.email %></h1>
-  <%= link_to 'Sign out', destroy_user_session_path, data: { turbo_method: :delete } %>
-<% else %>
-  <h1>Home</h1>
-  <%= link_to 'Sign in', new_user_session_path %>
-<% end %>
+<%= render "portfolio/header" %>
+<p class="notice"><%= notice %></p>
+<div class="flex flex-wrap gap-8 p-8">
+  <div class="flex-1">
+    <h2 class="text-3xl font-semibold text-gray-800">Portfolio value: <%= current_user.portfolio.portfolio_value %></h2>
+    <div class="overflow-x-auto bg-white shadow-lg rounded-lg">
+      <table class="min-w-full table-auto border-separate border-spacing-0">
+        <thead class="bg-gray-100 text-gray-600">
+          <tr>
+            <th class="px-6 py-3 text-left font-medium text-sm">Title</th>
+            <th class="px-6 py-3 text-left font-medium text-sm">Coin Symbol</th>
+            <th class="px-6 py-3 text-left font-medium text-sm">Actual Price</th>
+            <th class="px-6 py-3 text-left font-medium text-sm">Amount</th>
+            <th class="px-6 py-3 text-left font-medium text-sm">Total cost</th>
+            <th class="px-6 py-3 text-left font-medium text-sm">Change amount</th>
+            <th class="px-6 py-3 text-left font-medium text-sm">Remove currency</th>
+          </tr>
+        </thead>
+        <tbody class="text-gray-700">
+          <% @user_currencies.each do |portfolio_currency| %>
+            <tr class="hover:bg-gray-50 transition-colors duration-300">
+              <td class="px-6 py-4 border-b text-sm"><%= link_to portfolio_currency.currency.title, show_currency_prices_path(id: portfolio_currency.currency.id), class: "text-sm/6 font-semibold text-gray-900" %></td>
+              <td class="px-6 py-4 border-b text-sm"><%= portfolio_currency.currency.coin_symbol %></td>
+              <td class="px-6 py-4 border-b text-sm"><%= portfolio_currency.currency.actual_price %></td>
+              <td class="px-6 py-4 border-b text-sm"><%= portfolio_currency.amount %></td>
+              <td class="px-6 py-4 border-b text-sm"><%= portfolio_currency.total_cost %></td>
+              <td class="px-6 py-4 border-b text-sm">
+                <%= form_with(url: update_token_amount_path, method: :patch, local: true) do |f| %>
+                  <%= f.hidden_field :id, value: portfolio_currency.id %>
+                  <%= f.text_field :amount, class: "block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring focus:ring-blue-500 focus:border-blue-500" %>
+                  <%= f.submit "Update", class: "mt-2 bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-600 transition" %>
+                <% end %>
+              </td>
+              <td class="px-6 py-4 border-b text-sm">
+                <%= form_with(url: remove_token_path, method: :patch, local: true) do |f| %>
+                  <%= f.hidden_field :id, value: portfolio_currency.id %>
+                  <%= f.submit "Delete", class: "mt-2 bg-red-500 text-white py-1 px-3 rounded hover:bg-red-600 transition" %>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="flex-1">
+    <h2 class="text-3xl font-semibold text-gray-800">Add token to portfolio</h2>
+      <%= form_with(url: add_token_to_portfolio_path, local: true, method: :patch) do |f| %>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div class="mb-4">
+            <%= f.label :title, "Coin title", class: "block text-sm font-medium text-gray-700 mb-1" %>
+            <%= f.text_field :title, class: "w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring focus:ring-blue-500 focus:border-blue-500" %>
+          </div>
+
+          <div class="mb-4">
+            <%= f.label :coin_symbol, "Coin Symbol", class: "block text-sm font-medium text-gray-700 mb-1" %>
+            <%= f.text_field :coin_symbol, class: "w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring focus:ring-blue-500 focus:border-blue-500" %>
+          </div>
+
+          <div class="mb-4">
+            <%= f.label :amount, "Amount of coins", class: "block text-sm font-medium text-gray-700 mb-1" %>
+            <%= f.text_field :amount, class: "w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring focus:ring-blue-500 focus:border-blue-500" %>
+          </div>
+        </div>
+
+        <div class="flex justify-end mt-6">
+          <%= f.submit "Add Coin", class: "px-4 py-2 bg-blue-500 text-white font-medium rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+        </div>
+      <% end %>
+    <h2 class="text-3xl font-semibold text-gray-800">Available tokens</h2>
+    <div class="overflow-x-auto bg-white shadow-lg rounded-lg">
+      <table class="min-w-full table-auto border-separate border-spacing-0">
+        <thead class="bg-gray-100 text-gray-600">
+          <tr>
+            <th class="px-6 py-3 text-left font-medium text-sm">Title</th>
+            <th class="px-6 py-3 text-left font-medium text-sm">Coin Symbol</th>
+            <th class="px-6 py-3 text-left font-medium text-sm">Actual Price</th>
+          </tr>
+        </thead>
+        <tbody class="text-gray-700">
+          <% @currencies.each do |currency| %>
+            <tr class="hover:bg-gray-50 transition-colors duration-300">
+              <td class="px-6 py-4 border-b text-sm"><%= link_to currency.title, show_currency_prices_path(id: currency.id), class: "text-sm/6 font-semibold text-gray-900" %></td>
+              <td class="px-6 py-4 border-b text-sm"><%= currency.coin_symbol %></td>
+              <td class="px-6 py-4 border-b text-sm"><%= currency.actual_price %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
