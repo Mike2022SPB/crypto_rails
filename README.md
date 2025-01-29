@@ -1,24 +1,45 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Описание функциональности:
+- Пользователь создаёт аккаунт в системе(используем devise)
+- Пользователь логиниться
+- На главной странице представлен список имеющихся в портфеле криптовалют
+- На главной странице представлен список всех криптовалют
+- На главной странице представлена форма с помощью которой можно добавлять в портфель по названию или символю криптовалюты определенное количество криптовалюты
+- На главной странице в таблице криптовалют в портфеле и общем списке криптовалют есть возможность при нажатии на название криптовалюты перейти во вкладку с историей криптовалюты
+- На главной странице можно изменять количество криптовалюты в портфеле и удалять полностью запись криптовалюты в портфеле
+- На главной странице в списке имеющихся в портфеле криптовалют представлены в том числе: количество криптовалюты и её совокупная стоимость в портфеле
+- На главной странице представлен общий размер портфеля в USD
 
-Things you may want to cover:
 
-* Ruby version
+Инструкция по запуску проекта:
+1. Клонируйте проект и пройдите в его папку;
+2. Создайте .env в папке проекта с вашим ключом к API Coingecko, либо обратитесь ко мне, и я предоставлю свой;
+3. Для запуска проекта достаточно запустить команду ```docker-compose -f development.yml up --build -d```;
+4. Во время запуска команды собираются контейнеры на основе образов: rails + postgresql;
+5. С помощью ключа от coingecko при выполнении сидов скрипт обращается к coingecko и получает данные по ценам криптовалют за 7 дат, 2 из которых на начало и настоящее время по дню, остальные за прошлый период;
+6. Тесты можно запустить используя команду ```bundle exec rspec```(написаны для модели);
 
-* System dependencies
+Ссылка на использованное API: [coingecko.com](https://www.coingecko.com/)
 
-* Configuration
+Технологии и библиотеки:
+- ruby on rails
+- postgresql
+- rspec
+- factory_bot_rails
+- devise
+- tailwind
+- dotenv
+- httparty
+- rails-erd
+- docker-compose
 
-* Database creation
+Визуализация связей таблицы баз данных:
 
-* Database initialization
+![image](https://github.com/user-attachments/assets/b92da720-4a6b-4eb0-a701-b8389821f533)
 
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+Больше обо мне:
+ - Автор в телеграм: [@mike_godunoff](https://t.me/mike_godunoff)
+ - В linkedin.com: [mike_godunoff](https://www.linkedin.com/in/mike-godunoff/)
+ - Моя статья на [medium](https://medium.com/@mike.godunoff2020/telegram-mini-app-on-rails-6a6000e3b2c8)
+ - Моя статья на [хабр](https://habr.com/ru/articles/829520/)
