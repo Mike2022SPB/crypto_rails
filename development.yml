@@ -1,0 +1,45 @@
+version: '3'
+services:
+  db:
+    image: postgres:14
+    environment:
+      - POSTGRES_USER=crypto_rails
+      - POSTGRES_PASSWORD=crypto_rails_pass
+      - POSTGRES_DB=crypto_rails_development
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - crypto_rails_default
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U crypto_rails -d crypto_rails_development"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./:/backend
+      - bundle_path:/bundle
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - DB_PASSWORD=crypto_rails_pass
+    ports:
+      - '3000:3000'
+    networks:
+      - crypto_rails_default
+    env_file:
+      - .env
+
+networks:
+  crypto_rails_default:
+    driver: bridge
+
+volumes:
+  bundle_path:
+    driver: local
+  postgres_data:
+    driver: local
