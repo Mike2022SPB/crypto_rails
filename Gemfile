@@ -12,7 +12,7 @@ gem "tzinfo-data", platforms: %i[ windows jruby ]
 gem 'devise'
 gem "bootsnap", require: false
 gem 'dotenv-rails'
-gem "tailwindcss-rails", "~> 3.3"
+gem "tailwindcss-rails", "~> 4.0"
 gem "httparty"
 
 group :development, :test do
